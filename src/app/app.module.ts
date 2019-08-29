@@ -20,7 +20,7 @@ import { setTheme } from "ngx-bootstrap/utils";
 
 import { ButtonsModule } from "ngx-bootstrap/buttons";
 import { ModalModule } from "ngx-bootstrap/modal";
-import { ToastrModule } from "ngx-toastr";
+import { ToastrModule, ToastContainerModule } from "ngx-toastr";
 
 const ROUTES = [
   {

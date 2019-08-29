@@ -21,5 +21,4 @@ export class BannerComponent implements OnInit {
     localStorage.removeItem('teams');
     this.router.navigate(['/login']);
   }
-
 }

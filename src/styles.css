@@ -30,7 +30,22 @@ button.btn {
   margin: 0 10px;
 }
 
-a.btn{
+.required {
+  color: red;
+}
+
+input.ng-invalid:not(.ng-pristine) {
+  color: red;
+  border:red 2px solid;
+}
+
+span.error,
+label.error {
+  color: red;
+  font-weight: bold;
+}
+
+a.btn {
   color: white !important;
 }
 

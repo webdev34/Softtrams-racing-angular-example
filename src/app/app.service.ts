@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -17,7 +18,7 @@ export class AppService {
   username: string;
   members: Array<Member> = [];
 
-  constructor(private http: HttpClient, private toastrService: ToastrService) {
+  constructor(private http: HttpClient, private toastrService: ToastrService, private router: Router) {
     if (this.DEBUG) {
       this.api = 'http://localhost:3000';
     } else {
@@ -92,6 +93,15 @@ export class AppService {
       }
     );
   } 
+
+  isLoggedIn(){
+    if(!localStorage.getItem('username') || localStorage.getItem('username') == null){
+      this.router.navigate(['/login']);
+    }
+    else{
+      return true;
+    }
+  }
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

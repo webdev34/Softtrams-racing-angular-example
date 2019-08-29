@@ -5,6 +5,7 @@ import { AppService } from '../app.service';
 import { Router } from '@angular/router';
 import { Member } from '../app.member-class';
 import { Team } from '../app.team-class';
+import * as cloneDeep from 'lodash/cloneDeep';
 
 /* I CREATED A CLASS IN A SEPARATE TS FILE*/
 // This interface may be useful in the times ahead...
@@ -33,15 +34,13 @@ export class MemberDetailsComponent implements OnInit, OnChanges {
   currentMember = null;
   memberId = null;
   currentMode = 'view';
+  component: any;
 
   constructor(private fb: FormBuilder, private appService: AppService, private router: Router, private route: ActivatedRoute) {
     }
 
   ngOnInit() {
-    if(!localStorage.getItem('username') || localStorage.getItem('username') == null){
-      this.router.navigate(['/login']);
-    }
-    else{
+    if(this.appService.isLoggedIn()){
       this.members = JSON.parse(localStorage.getItem('members'));
       this.teams = JSON.parse(localStorage.getItem('teams'));
       this.route.paramMap.subscribe(params => {
@@ -51,15 +50,19 @@ export class MemberDetailsComponent implements OnInit, OnChanges {
       // CANT US THIS SERVICE BELOW BECAUSE OF STALE DATA BUT IF WE HAD THE SERVICES WORKING ON THE BACKEND THIS IS HOW I WOULD MAKE THE CALL
       //this.appService.getMemberById(this.memberId).subscribe(currentMember => (this.currentMember = currentMember[0]));
 
-      this.members.forEach((thisMember: any, key: any) => {
-        if (thisMember.id == this.memberId) {
-          this.currentMember = thisMember;
-        }
-      });
+      this.getCurrentUser();
     }
   }
 
   ngOnChanges() {}
+
+  getCurrentUser() {
+    this.members.forEach((thisMember: any, key: any) => {
+      if (thisMember.id == this.memberId) {
+        this.currentMember = cloneDeep(thisMember);
+      }
+    });
+  }
 
   // TODO: Add member to members
   onSubmit(form: FormGroup) {
@@ -70,7 +73,10 @@ export class MemberDetailsComponent implements OnInit, OnChanges {
     this.router.navigate(['/members']);
   }
 
-  toggleView(currentView) {
+  toggleView(currentView, resetUser) {
     this.currentMode = currentView;
+    if(resetUser){
+      this.getCurrentUser();
+    }
   }
 }

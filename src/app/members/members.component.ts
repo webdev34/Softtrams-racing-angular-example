@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalService, BsModalRef } from "ngx-bootstrap";
 import { Member } from "../app.member-class";
 import { Team } from '../app.team-class';
+import * as cloneDeep from 'lodash/cloneDeep';
 
 @Component({
   selector: "app-members",
@@ -14,8 +15,9 @@ import { Team } from '../app.team-class';
 export class MembersComponent implements OnInit {
   members: Array<Member>;
   teams: Array<Team>;
-  newMember = null;
-  currentMember = null;
+  newMember: Member = null;
+  currentMember: Member = null;
+  currentMemberName: string = null;
   modalRef: BsModalRef;
   
   constructor(
@@ -25,10 +27,7 @@ export class MembersComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if(!localStorage.getItem('username') || localStorage.getItem('username') == null){
-      this.router.navigate(['/login']);
-    }
-    else{
+    if(this.appService.isLoggedIn()){
       this.members = JSON.parse(localStorage.getItem('members'));
       this.teams = JSON.parse(localStorage.getItem('teams'));
     }
@@ -42,7 +41,8 @@ export class MembersComponent implements OnInit {
   editMember(member: Member) {
     this.members.forEach((thisMember: Member, key: any) => {
       if (member.id == member.id) {
-        this.currentMember = member;
+        this.currentMember = cloneDeep(member);
+        this.currentMemberName = `${member.firstName} ${member.lastName}`;
       }
     });
   }
